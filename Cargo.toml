@@ -4,6 +4,8 @@ version = "0.0.1"
 edition = "2021"
 build = "./src/build.rs"
 description = "utilities for spans and diagnostics"
+repository = "https://github.com/samhdev/drias"
+license = "GPL-3.0-or-later"
 
 [features]
 diag = []
