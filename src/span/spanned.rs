@@ -10,10 +10,22 @@ impl<T> Spanned<T, MultiSpan> {
     pub fn new<S: AsMultiSpan>(value: T, span: S) -> Self {
         Self { value, span: span.multi_span() }
     }
+
+    pub fn span_new<S: AsMultiSpan>(span: S, value: T) -> Self {
+        Self { value, span: span.multi_span() }
+    }
+
+    pub fn value_new(value: T) -> Self {
+        Self { value, span: MultiSpan::empty() }
+    }
 }
 
 impl<T, S: AsSpan> Spanned<T, S> {
     pub fn new(value: T, span: S) -> Self {
+        Self { value, span }
+    }
+
+    pub fn span_new(span: S, value: T) -> Self {
         Self { value, span }
     }
 }
