@@ -1,31 +1,42 @@
-use crate::span::{Span, ProcSpan};
+use std::ops::Deref;
+use crate::span::{AsMultiSpan, AsSpan, MultiSpan};
 
-pub trait Spanned {
-    fn span(&self) -> Span;
-
-    fn proc_span(&self) -> ProcSpan { self.span().unwrap() }
+pub struct Spanned<T, S = MultiSpan> {
+    value: T,
+    span: S
 }
 
-impl Spanned for Span {
-    fn span(&self) -> Span {
-        self.clone()
+impl<T> Spanned<T, MultiSpan> {
+    pub fn new<S: AsMultiSpan>(value: T, span: S) -> Self {
+        Self { value, span: span.multi_span() }
     }
 }
 
-impl Spanned for ProcSpan {
-    fn span(&self) -> Span {
-        Span::from(self.clone())
+impl<T, S: AsSpan> Spanned<T, S> {
+    pub fn new(value: T, span: S) -> Self {
+        Self { value, span }
     }
 }
 
-impl Spanned for &Span {
-    fn span(&self) -> Span {
-       *self.clone()
+
+impl<T, S> Spanned<T, S> {
+    pub fn span(&self) -> &S {
+        &self.span
+    }
+
+    pub fn value(&self) -> &T {
+        &self.value
+    }
+
+    pub fn into_value(self) -> T {
+        self.value
     }
 }
 
-impl Spanned for &ProcSpan {
-    fn span(&self) -> Span {
-        Span::from(*self.clone())
+impl<T, S> Deref for Spanned<T, S> {
+    type Target = T;
+
+    fn deref(&self) -> &Self::Target {
+        &self.value
     }
 }

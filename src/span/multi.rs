@@ -1,4 +1,4 @@
-use crate::span::{Span, Spanned};
+use crate::span::{Span, AsSpan};
 
 #[derive(Clone)]
 pub struct MultiSpan(Vec<Span>);
@@ -45,13 +45,13 @@ impl AsMultiSpan for () {
     }
 }
 
-impl<T: Spanned> AsMultiSpan for T {
+impl<T: AsSpan> AsMultiSpan for T {
     fn multi_span(self) -> MultiSpan {
         MultiSpan::one(self.span())
     }
 }
 
-impl<T: Spanned> AsMultiSpan for Vec<T> {
+impl<T: AsSpan> AsMultiSpan for Vec<T> {
     fn multi_span(self) -> MultiSpan {
         MultiSpan::new(self.into_iter().map(|x| x.span()).collect())
     }
